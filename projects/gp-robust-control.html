@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gaussian-Process residual learning and variance-driven robust feedback linearization for robotic manipulators with unknown uncertainty.">
+  <meta name="author" content="Mohamed Abdelwahab">
+  <meta name="theme-color" content="#07111f">
+  <title>GP-Based Robust Feedback Linearization · Mohamed Abdelwahab</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../scripts.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="../index.html" aria-label="Mohamed Abdelwahab home">
+      <span class="brand-mark">MA</span>
+      <span class="brand-name">Mohamed Abdelwahab</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="nav-links">
+      <a href="../index.html">Home</a>
+      <a class="active" href="../projects/index.html">Projects</a>
+      <a href="../demos/index.html">Demos</a>
+      <a href="../publications.html">Publications</a>
+      <a href="../blog/index.html">Robotics Blog</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="page-hero project-hero-compact">
+      <div class="card-kicker">Learning-based robust control</div>
+      <h1>GP-Based Robust Feedback Linearization</h1>
+      <p>A Gaussian Process learns the manipulator-model mismatch, while its posterior uncertainty determines how much robust protection is required for reliable trajectory tracking.</p>
+      <div class="hero-meta">
+        <div class="tag-list">
+          <span>Gaussian Process Regression</span>
+          <span>Feedback linearization</span>
+          <span>Robust control</span>
+          <span>Robot manipulation</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-video-feature" aria-labelledby="gp-rfbl-video-title">
+      <div class="feature-video-heading">
+        <div>
+          <div class="card-kicker">Method explanation</div>
+          <h2 id="gp-rfbl-video-title">How prediction and uncertainty work together</h2>
+        </div>
+        <p>The animation follows the complete controller: nominal feedback linearization, GP residual learning, variance-driven robustification, Lyapunov analysis, and the out-of-distribution tracking experiment.</p>
+      </div>
+      <div class="feature-video-frame">
+        <div class="video-shell video-shell-wide youtube-shell">
+          <button aria-label="Play the GP-based Robust Manipulator Control explanation video" class="youtube-facade" data-youtube-id="U_3mTCBFaEo" data-youtube-title="GP-Based Robust Manipulator Control" type="button">
+            <img alt="Gaussian-Process-based robust feedback-linearization controller" loading="eager" src="../assets/images/projects/gp-rfbl/video_poster.jpg">
+            <span aria-hidden="true" class="youtube-play-icon">▶</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-layout project-content-layout">
+      <article class="content-panel">
+        <section id="problem">
+          <div class="section-index">01 · Control problem</div>
+          <h2>Model mismatch re-enters the tracking-error dynamics</h2>
+          <p>Feedback linearization cancels the nonlinear manipulator dynamics only when the model is accurate. With an estimated inertia matrix and estimated Coriolis, centrifugal, and gravity terms, the cancellation is incomplete and an unknown residual drives the closed-loop error.</p>
+          <div class="equation-panel">
+            <div>
+              <span class="equation-label">Manipulator dynamics</span>
+              $$M(q)\ddot q+C(q,\dot q)\dot q+g(q)=\tau$$
+            </div>
+            <div>
+              <span class="equation-label">Model mismatch</span>
+              $$e(q,\dot q,\ddot q)=\tau-\bigl(\widehat M(q)\ddot q+\widehat C(q,\dot q)\dot q+\widehat g(q)\bigr)$$
+            </div>
+          </div>
+          <figure class="project-figure">
+            <img src="../assets/images/projects/gp-rfbl/model_mismatch.jpg" alt="Feedback linearization with an estimated manipulator model and residual model mismatch" loading="lazy">
+            <figcaption>An inaccurate model leaves nonlinear, coupled error dynamics; nominal feedback linearization can therefore guarantee only practical tracking.</figcaption>
+          </figure>
+        </section>
+
+        <section id="gp-model">
+          <div class="section-index">02 · Gaussian Process model</div>
+          <h2>Learn the torque mismatch rather than replacing the physics</h2>
+          <p>The nominal model provides the known physical structure. A bank of independent Gaussian Processes learns the remaining torque mismatch from exploratory data, using the robot configuration, velocity, and acceleration as inputs.</p>
+          <div class="equation-panel">
+            <div>
+              <span class="equation-label">Training pair</span>
+              $$x=(q,\dot q,\ddot q),\qquad y_i=e_{m,i}(x)$$
+            </div>
+            <div>
+              <span class="equation-label">GP prediction</span>
+              $$\widehat e_i(x)=\mu_i(x),\qquad \sigma_i^2(x)=\Sigma_i(x)$$
+            </div>
+          </div>
+          <div class="method-figure-grid">
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/gp_two_roles.jpg" alt="Posterior mean and posterior uncertainty as the two outputs required by the controller" loading="lazy">
+              <figcaption>The posterior mean estimates the mismatch; the posterior uncertainty quantifies where that estimate should not be trusted.</figcaption>
+            </figure>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/gp_training.jpg" alt="Gaussian Process training data and posterior over a model-mismatch component" loading="lazy">
+              <figcaption>Each torque component is learned from residual measurements computed relative to the nominal model.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="controller">
+          <div class="section-index">03 · Controller construction</div>
+          <h2>Use the GP mean for cancellation and the variance for protection</h2>
+          <p>The GP posterior mean is inserted as an outer-loop torque correction. This reduces the disturbance that remains after nominal nonlinear cancellation, but it does not by itself guarantee tracking when the robot moves away from the training distribution.</p>
+          <div class="equation-panel">
+            <div>
+              <span class="equation-label">Proposed control law</span>
+              $$\tau=\widehat M(q)a+\widehat n(q,\dot q)+\widehat e(x)+w$$
+            </div>
+            <div>
+              <span class="equation-label">Residual error dynamics</span>
+              $$\ddot{\widetilde q}+K_D\dot{\widetilde q}+K_P\widetilde q=\widehat M^{-1}(\widetilde e-w),\quad \widetilde e=e-\widehat e$$
+            </div>
+          </div>
+          <figure class="project-figure">
+            <img src="../assets/images/projects/gp-rfbl/mean_compensation.jpg" alt="Nominal feedback linearization augmented by the Gaussian Process posterior mean" loading="lazy">
+            <figcaption>The learned mean improves nonlinear cancellation; the robust term is reserved for the residual that the GP does not explain.</figcaption>
+          </figure>
+
+          <p>The robust direction is chosen from the Lyapunov derivative, while its magnitude is obtained from a high-probability GP confidence bound. For the error state $\xi=[\widetilde q^\top\;\dot{\widetilde q}^\top]^\top$, define $V=\xi^\top Q\xi$ and $z=\widehat M^{-1}D^\top Q\xi$.</p>
+          <div class="adaptive-law-panel">
+            <div class="adaptive-law-copy">
+              <span class="equation-label">Variance-driven robust action</span>
+              $$w=\rho\,\frac{z}{\lVert z\rVert}$$
+            </div>
+            <div class="adaptive-law-copy">
+              <span class="equation-label">Combined confidence radius</span>
+              $$\rho(x)=\sqrt{\sum_{i=1}^{N}\rho_i^2(x)},\qquad \rho_i(x)\ \text{bounds}\ |e_i(x)-\mu_i(x)|$$
+            </div>
+          </div>
+          <div class="method-figure-grid">
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/uncertainty_bound.jpg" alt="Gaussian Process posterior uncertainty increasing outside the data-supported region" loading="lazy">
+              <figcaption>Far from training data, posterior uncertainty grows and automatically requests stronger robust protection.</figcaption>
+            </figure>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/lyapunov_condition.jpg" alt="Lyapunov relation for the robust GP feedback-linearization controller" loading="lazy">
+              <figcaption>If $\rho$ exceeds the residual mismatch norm, the robust action makes the Lyapunov derivative strictly negative away from the origin.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="guarantee">
+          <div class="section-index">04 · Stability interpretation</div>
+          <h2>High-probability asymptotic tracking</h2>
+          <p>The Lyapunov derivative can be written as</p>
+          <div class="equation-panel">
+            <div>
+              <span class="equation-label">Derivative along the closed loop</span>
+              $$\dot V=-\xi^\top P\xi+2z^\top(\widetilde e-w)$$
+            </div>
+            <div>
+              <span class="equation-label">Sufficient condition</span>
+              $$\rho>\lVert\widetilde e\rVert\quad\Longrightarrow\quad\dot V<0\ \text{for}\ \xi\neq0$$
+            </div>
+          </div>
+          <div class="insight-grid">
+            <div class="insight-card">
+              <h3>Nominal physics remains active</h3>
+              <p>The controller does not discard the analytical model; it learns only the mismatch left by that model.</p>
+            </div>
+            <div class="insight-card">
+              <h3>Robustness is state dependent</h3>
+              <p>The GP variance makes the robust gain small in familiar regions and larger in poorly supported regions.</p>
+            </div>
+            <div class="insight-card">
+              <h3>The guarantee is probabilistic</h3>
+              <p>Under the paper assumptions, asymptotic tracking holds with probability at least $(1-\delta)^N$ for $N$ independent GP outputs.</p>
+            </div>
+          </div>
+          <figure class="project-figure">
+            <img src="../assets/images/projects/gp-rfbl/controller_architecture.jpg" alt="Complete GP-based robust feedback-linearization architecture" loading="lazy">
+            <figcaption>The final architecture combines tracking error feedback, nominal dynamics, GP mean compensation, posterior uncertainty, and the variance-driven robust term.</figcaption>
+          </figure>
+        </section>
+
+        <section id="generalization">
+          <div class="section-index">05 · Generalization behavior</div>
+          <h2>The controller changes its behavior when the GP leaves its support</h2>
+          <div class="method-figure-grid">
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/inside_support.jpg" alt="GP mean, uncertainty, robust magnitude, and tracking error inside the training distribution" loading="lazy">
+              <figcaption>Inside the data-supported region, the GP mean is informative, uncertainty is low, and only modest robust action is required.</figcaption>
+            </figure>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/outside_support.jpg" alt="GP mean, uncertainty, robust magnitude, and tracking error outside the training distribution" loading="lazy">
+              <figcaption>Outside the training support, the mean fades toward the prior while uncertainty and the robust correction increase to preserve tracking.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="evaluation">
+          <div class="section-index">06 · Evaluation</div>
+          <h2>Two-link manipulator tracking across unseen trajectories</h2>
+          <p>The controller was evaluated on a simulated 2-DoF planar manipulator over ten 50-second reference trajectories at 100 Hz. The GP mismatch model was trained from 100 downsampled samples. A deliberately inaccurate nominal model, $\widehat M=0.5I$ and $\widehat n=0$, was used to expose the effect of model error.</p>
+          <div class="insight-grid">
+            <div class="insight-card">
+              <h3>True model</h3>
+              <p><strong>2.28 ± 0.20°</strong><br>Reference performance with exact inverse dynamics.</p>
+            </div>
+            <div class="insight-card">
+              <h3>GP mean only</h3>
+              <p><strong>55.56 ± 23.15°</strong><br>Improved cancellation, but weak behavior outside the training region.</p>
+            </div>
+            <div class="insight-card">
+              <h3>Robust GP-FL</h3>
+              <p><strong>15.67 ± 3.89°</strong><br>71.8% lower mean RMSE than GP-only control.</p>
+            </div>
+          </div>
+          <div class="result-block">
+            <div class="result-copy">
+              <span class="result-label">Illustrative trajectory</span>
+              <h3>The robust term prevents the out-of-distribution failure</h3>
+              <p>As the trajectory leaves the data-supported region, the GP-only controller loses its learned compensation and its joint-space error grows. The proposed controller increases $\rho$ using posterior uncertainty and maintains substantially closer tracking.</p>
+            </div>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/simulation_comparison.jpg" alt="Side-by-side simulation of GP mean-only feedback linearization and robust GP feedback linearization" loading="lazy">
+              <figcaption>The same GP mean is used in both controllers; the difference is the uncertainty-driven robust action.</figcaption>
+            </figure>
+          </div>
+          <div class="method-figure-grid">
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/rmse_summary.jpg" alt="RMSE summary for true, nominal, GP-only, and robust GP feedback-linearization controllers" loading="lazy">
+              <figcaption>Robust GP-FL reduces mean RMSE by 71.8% relative to GP-only control and by 86.6% relative to nominal feedback linearization.</figcaption>
+            </figure>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/gp-rfbl/control_action.jpg" alt="Representative joint control action for true-model, GP-only, and robust GP controllers" loading="lazy">
+              <figcaption>The robust controller produces an action that remains close to the true-model controller over the complete trajectory.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="takeaway">
+          <div class="section-index">07 · Takeaway</div>
+          <h2>The learned model does not need to be trusted everywhere</h2>
+          <p>The posterior mean improves model cancellation where data are informative, while the posterior uncertainty identifies where additional protection is necessary. This separates learning and robustness into complementary roles and preserves a Lyapunov-based tracking guarantee.</p>
+          <figure class="project-figure">
+            <img src="../assets/images/projects/gp-rfbl/takeaway.jpg" alt="Summary of mismatch learning, uncertainty quantification, and robust tracking" loading="lazy">
+            <figcaption>Learn the mismatch, quantify uncertainty, and robustify only where the learned correction is insufficiently reliable.</figcaption>
+          </figure>
+        </section>
+      </article>
+
+      <aside class="sidebar-card">
+        <h3>On this page</h3>
+        <a href="#problem">Control problem</a>
+        <a href="#gp-model">GP mismatch model</a>
+        <a href="#controller">Controller construction</a>
+        <a href="#guarantee">Stability result</a>
+        <a href="#generalization">Generalization behavior</a>
+        <a href="#evaluation">Evaluation</a>
+        <a href="#takeaway">Takeaway</a>
+      </aside>
+    </div>
+
+    <section class="citation-box" aria-labelledby="citation-heading">
+      <div class="citation-actions">
+        <div>
+          <div class="card-kicker">Associated publication</div>
+          <h2 id="citation-heading">A Robust Controller Based on Gaussian Processes for Robotic Manipulators with Unknown Uncertainty</h2>
+        </div>
+        <button class="copy-button" data-copy-target="gp-robust-bib" type="button">Copy BibTeX</button>
+      </div>
+      <div class="button-row compact">
+        <a class="paper-button" href="../assets/pdfs/gp_robust_controller_unknown_uncertainty.pdf">Paper PDF</a>
+        <a class="paper-button" href="https://ieeexplore.ieee.org/document/11073370">IEEE Xplore</a>
+        <a class="paper-button" href="https://doi.org/10.1109/MED64031.2025.11073370">DOI</a>
+      </div>
+      <pre class="bibtex" id="gp-robust-bib"><code>@inproceedings{giacomuzzo2025robust,
+  author    = {Giulio Giacomuzzo and Mohamed Abdelwahab and Marco Calì and Alberto Dalla Libera and Ruggero Carli},
+  title     = {A Robust Controller Based on Gaussian Processes for Robotic Manipulators with Unknown Uncertainty},
+  booktitle = {2025 33rd Mediterranean Conference on Control and Automation (MED)},
+  year      = {2025},
+  pages     = {624--629},
+  doi       = {10.1109/MED64031.2025.11073370}
+}</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+    <span class="footer-links">
+      <a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+      <a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+    </span>
+  </footer>
+</body>
+</html>

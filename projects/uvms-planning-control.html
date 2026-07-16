@@ -1,0 +1,50 @@
+ <!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="A hierarchical planning and control framework for underwater vehicle–manipulator systems in confined environments." name="description"/>
+<meta content="Mohamed Abdelwahab" name="author"/>
+<meta content="#07111f" name="theme-color"/>
+<title>MANTA: Manipulator-Aware Navigation with Topology-Guided Adaptation · Mohamed Abdelwahab</title>
+<link href="../styles.css" rel="stylesheet"/>
+<script defer="" src="../scripts.js"></script>
+<script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+      </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header aria-label="Primary navigation" class="site-header">
+<a aria-label="Mohamed Abdelwahab home" class="brand" href="../index.html">
+<span class="brand-mark">MA</span>
+<span class="brand-name">Mohamed Abdelwahab</span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" class="nav-toggle" type="button">Menu</button>
+<nav class="nav-links" id="site-nav">
+<a href="../index.html">Home</a>
+<a class="active" href="../projects/index.html">Projects</a>
+<a href="../demos/index.html">Demos</a>
+<a href="../publications.html">Publications</a>
+<a href="../blog/index.html">Robotics Blog</a>
+</nav>
+</header>
+<main id="main-content">
+<section class="page-hero"><div class="card-kicker">Motion planning and marine robotics</div><h1>MANTA: Manipulator-Aware Navigation with Topology-Guided Adaptation</h1><p>A hierarchical planning and control framework for underwater vehicle–manipulator systems in confined environments.</p><div class="hero-meta"><div class="tag-list"><span>UVMS</span><span>Topology-aware planning</span><span>Trajectory optimization</span><span>P-MC-PILCO</span></div></div></section>
+<div class="content-layout">
+<article class="content-panel"><section id="problem"><h2>Problem</h2><p>Underwater vehicle–manipulator systems must navigate cluttered environments while maintaining collision clearance, base stability, arm feasibility, and terminal tool reachability. Direct high-dimensional planning is expensive and often produces irregular base and arm motion.</p></section><section id="architecture"><h2>Hierarchical architecture</h2><p>MANTA separates global topology selection from continuous vehicle–arm refinement. A reduced-state global planner identifies distinct free-space corridors, then a manipulation-aware optimizer refines base and arm motion under collision, smoothness, clearance, and terminal feasibility constraints.</p><figure class="project-figure"><img alt="MANTA five-stage planning pipeline over a confined underwater vehicle–manipulator environment" loading="lazy" src="../assets/images/projects/manta-planning.jpg"/><figcaption>MANTA pipeline: conservative modeling, goal-basin generation, A* corridor selection, spline refinement, and final certification.</figcaption></figure></section><section id="evidence"><h2>Evaluation evidence</h2><ul><li>Confined 3D environments with offset windows, forked tunnels, vertical shafts, and narrow-versus-wide route alternatives.</li><li>Comparisons against high-dimensional sampling-based planners.</li><li>Metrics covering success, clearance, planning time, base path length, curvature energy, arm motion, and terminal tool error.</li></ul></section><section id="control"><h2>Tracking and station keeping</h2><p>The planning layer is paired with learning-based trajectory tracking and station-keeping control for the underwater vehicle, enabling evaluation of the full planning–control pipeline.</p></section></article>
+<aside class="sidebar-card"><h3>On this page</h3><a href="#problem">Problem</a><a href="#architecture">Hierarchical architecture</a><a href="#evidence">Evaluation evidence</a><a href="#control">Tracking and station keeping</a><a href="../demos/index.html">Related demos</a><a href="../publications.html">Publications</a></aside>
+</div>
+</main>
+<footer class="footer">
+<span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+<span class="footer-links">
+
+<a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+<a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+</span>
+</footer>
+</body>
+</html>

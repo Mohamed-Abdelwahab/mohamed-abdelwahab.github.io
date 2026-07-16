@@ -1,0 +1,125 @@
+ <!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Robotics research portfolio of Mohamed Abdelwahab." name="description"/>
+<meta content="Mohamed Abdelwahab" name="author"/>
+<meta content="#07111f" name="theme-color"/>
+<title>Home · Mohamed Abdelwahab</title>
+<link href="styles.css" rel="stylesheet"/>
+<script defer="" src="scripts.js"></script>
+<script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+      </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header aria-label="Primary navigation" class="site-header">
+<a aria-label="Mohamed Abdelwahab home" class="brand" href="index.html">
+<span class="brand-mark">MA</span>
+<span class="brand-name">Mohamed Abdelwahab</span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" class="nav-toggle" type="button">Menu</button>
+<nav class="nav-links" id="site-nav">
+<a class="active" href="index.html">Home</a>
+<a href="projects/index.html">Projects</a>
+<a href="demos/index.html">Demos</a>
+<a href="publications.html">Publications</a>
+<a href="blog/index.html">Robotics Blog</a>
+</nav>
+</header>
+<main id="main-content">
+<section class="hero-section">
+<div class="hero-text">
+<div class="eyebrow">Robotics · Control · Robot Learning</div>
+<h1><span class="hero-title-gradient">Mohamed Abdelwahab</span></h1>
+<p class="hero-subtitle">I develop uncertainty-aware planning, control, and learning methods for robotic manipulators and marine robotic systems operating with uncertain dynamics, tight constraints, and limited real-world data.</p>
+<div class="hero-buttons">
+<a class="btn-primary" href="demos/index.html">View research demos →</a>
+<a class="btn-secondary" href="projects/index.html">Explore projects</a>
+<a class="btn-ghost" href="assets/pdfs/mohamed_abdelwahab_cv.pdf">Download CV</a>
+</div>
+</div>
+<aside class="profile-card">
+<img alt="Portrait of Mohamed Abdelwahab" class="profile-photo" onerror="this.onerror=null;this.src='assets/images/profile-placeholder.svg';" src="assets/images/profile.jpg"/>
+<div class="profile-meta">
+<p class="profile-role">PhD Researcher in Autonomous Systems</p>
+<ul class="profile-list">
+<li>Robotic manipulation and motion planning</li>
+<li>Robust and adaptive nonlinear control</li>
+<li>Gaussian Processes and model-based RL</li>
+<li>Marine robotics and UVMS</li>
+</ul>
+<div class="status-row"><span>University of Padova · NTNU</span></div>
+</div>
+</aside>
+</section>
+<section aria-labelledby="bio-heading" class="bio-panel">
+<h2 class="bio-label section-name" id="bio-heading">Biography</h2>
+<div class="bio-copy">
+<p>I hold a Master's degree in Control Systems Engineering and I am a PhD researcher in Autonomous Systems at the University of Padova and a visiting researcher at the Norwegian University of Science and Technology (NTNU). My work combines robot learning, nonlinear and robust control, motion planning, and marine robotics.</p>
+<p>I develop sample-efficient Gaussian-Process-based model-based reinforcement learning methods, adaptive feedback-linearization controllers for unknown dynamics, and manipulation-aware planning and control for underwater vehicle–manipulator systems. I evaluate these methods across simulation benchmarks and robotic platforms, including a 7-DoF Franka Emika Panda, BlueROV and USV scenarios, and autonomous-driving systems.</p>
+</div>
+</section>
+<section class="section-shell research-interests-section">
+<div class="section-heading section-heading-simple"><h2 class="section-name">Research interests</h2></div>
+<div class="research-grid">
+<article class="research-card"><h3>Robot Learning</h3><p>Data-efficient policy learning using Gaussian Process dynamics, approximate rollouts, and uncertainty propagation.</p></article>
+<article class="research-card"><h3>Robust Control</h3><p>Feedback linearization, Lyapunov analysis, adaptive gains, and tracking under unknown model mismatch.</p></article>
+<article class="research-card"><h3>Motion Planning</h3><p>Topology-aware global search and manipulation-aware trajectory refinement under collision and feasibility constraints.</p></article>
+<article class="research-card"><h3>Marine Robotics</h3><p>Planning, station keeping, and trajectory tracking for surface and underwater vehicle–manipulator systems.</p></article>
+</div>
+</section>
+<section class="section-shell">
+<div class="section-heading"><div class="card-kicker">Selected work</div><h2>Research projects</h2><p>Each project page presents the problem, technical approach, evidence, and associated publication when available.</p></div>
+<div class="project-grid"><article class="project-tile"><a class="project-thumb-link" href="projects/pmc-pilco.html"><img alt="Gaussian Process rollout step for uncertainty-aware trajectory tracking" class="project-thumb" loading="lazy" src="assets/images/projects/pmc-pilco.jpg"/></a>
+<div class="card-kicker">Robot learning</div>
+<h3><a href="projects/pmc-pilco.html">P-MC-PILCO: Efficient Model-Based RL</a></h3>
+<p>Approximate Gaussian Processes and weight-space sampling reduce stochastic rollout cost while retaining uncertainty-aware policy optimization for robot control.</p>
+<div class="tag-list"><span>Gaussian Processes</span><span>Model-Based RL</span><span>Franka Panda</span></div>
+<a class="inline-link" href="projects/pmc-pilco.html">Read project →</a>
+</article>
+<article class="project-tile"><a class="project-thumb-link" href="projects/uvms-planning-control.html"><img alt="MANTA reduced-space A-star corridor extraction for underwater vehicle manipulator planning" class="project-thumb" loading="lazy" src="assets/images/projects/manta-planning.jpg"/></a>
+<div class="card-kicker">Motion planning</div>
+<h3><a href="projects/uvms-planning-control.html">MANTA: Manipulator-Aware UVMS Planning</a></h3>
+<p>A hierarchical planning and control architecture for underwater vehicle–manipulator systems operating in narrow, topologically complex environments.</p>
+<div class="tag-list"><span>UVMS</span><span>Topology-aware planning</span><span>Trajectory optimization</span></div>
+<a class="inline-link" href="projects/uvms-planning-control.html">Read project →</a>
+</article>
+<article class="project-tile"><a class="project-thumb-link" href="projects/adaptive-robust-control.html"><img alt="Adaptive robust controller showing Lyapunov monitoring, memory, robust action, and adaptive gain" class="project-thumb" loading="lazy" src="assets/images/projects/adaptive-robust-control.jpg"/></a>
+<div class="card-kicker">Nonlinear control</div>
+<h3><a href="projects/adaptive-robust-control.html">Adaptive Robust Feedback Linearization</a></h3>
+<p>An adaptive robust correction compensates for unknown manipulator model mismatch without requiring a known analytical uncertainty bound.</p>
+<div class="tag-list"><span>Feedback linearization</span><span>Lyapunov analysis</span><span>Adaptive control</span></div>
+<a class="inline-link" href="projects/adaptive-robust-control.html">Read project →</a>
+</article>
+<article class="project-tile"><a class="project-thumb-link" href="projects/gp-robust-control.html"><img alt="Gaussian Process robust feedback linearization controller architecture" class="project-thumb" loading="lazy" src="assets/images/projects/gp-robust-control.jpg"/></a>
+<div class="card-kicker">Learning-based control</div>
+<h3><a href="projects/gp-robust-control.html">GP-Based Robust Manipulator Control</a></h3>
+<p>Gaussian Process residual models and predictive uncertainty support robust trajectory tracking under unknown robot dynamics.</p>
+<div class="tag-list"><span>GPR</span><span>Robust control</span><span>Manipulation</span></div>
+<a class="inline-link" href="projects/gp-robust-control.html">Read project →</a>
+</article>
+</div>
+</section>
+<section class="section-shell">
+<div class="section-heading"><div class="card-kicker">Experience</div><h2>Research and teaching</h2></div>
+<div class="timeline">
+<article class="timeline-card"><div class="timeline-date">Sep 2025 – Aug 2026</div><div><h3>Visiting Researcher · NTNU</h3><p>Department of Engineering Cybernetics, Trondheim, Norway</p><ul><li>Developing simulation environments and learning-based control for surface and underwater manipulation, tracking, and station keeping.</li><li>Building evaluation pipelines for robustness, sample efficiency, and sim-to-real transfer.</li></ul></div></article>
+<article class="timeline-card"><div class="timeline-date">PhD research</div><div><h3>PhD Researcher · University of Padova</h3><p>Autonomous Systems, Padova, Italy</p><ul><li>Research on model-based reinforcement learning, robust/adaptive control, Gaussian Process dynamics, and UVMS planning.</li><li>Validation on nonlinear benchmarks and robotic manipulation systems.</li></ul></div></article>
+<article class="timeline-card"><div class="timeline-date">Oct 2023 – Jan 2025</div><div><h3>Tutor · Adversarial Machine Learning</h3><p>University of Padova</p><ul><li>Supported course delivery, technical explanations, exercises, and student supervision.</li></ul></div></article>
+</div>
+</section>
+</main>
+<footer class="footer">
+<span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+<span class="footer-links">
+<a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+<a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+</span>
+</footer>
+</body>
+</html>

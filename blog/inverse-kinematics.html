@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An intuitive, implementation-grounded guide to inverse kinematics, local minima, multi-start search, and motion planning for the Alpha5 marine manipulator.">
+  <meta name="author" content="Mohamed Abdelwahab">
+  <meta name="theme-color" content="#07111f">
+  <title>Inverse Kinematics: From a Target to Alpha5 Motion · Mohamed Abdelwahab</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../scripts.js"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="ik-article-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="../index.html" aria-label="Mohamed Abdelwahab home">
+      <span class="brand-mark">MA</span>
+      <span class="brand-name">Mohamed Abdelwahab</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../projects/index.html">Projects</a>
+      <a href="../demos/index.html">Demos</a>
+      <a href="../publications.html">Publications</a>
+      <a class="active" href="index.html">Robotics Blog</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="page-hero ik-page-hero">
+      <div class="card-kicker">Robot kinematics · Alpha5 case study</div>
+      <h1>Inverse Kinematics:<br><span class="ik-title-gradient">from a target to real robot motion</span></h1>
+      <p>A guide to analytical, Jacobian-based, and optimization-based inverse kinematics.</p>
+      <div class="hero-meta">
+        <div class="tag-list">
+          <span>Alpha5 manipulator</span>
+          <span>Stonefish simulation</span>
+          <span>Jacobian transpose</span>
+          <span>Damped least squares</span>
+          <span>Quadratic programming</span>
+          <span>Multi-start IK</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-video-feature ik-opening-video" aria-labelledby="ik-story-video-title">
+      <div class="feature-video-heading">
+        <div>
+          <div class="card-kicker">Start here · visual overview</div>
+          <h2 id="ik-story-video-title">Why a reachable target can still defeat a local IK solver</h2>
+        </div>
+        <!-- <p>The animation connects the complete story: local linearization, singularity regularization, branch exploration, trajectory generation, and position-gated grasp closure.</p> -->
+      </div>
+      <div class="feature-video-frame">
+        <div class="video-shell video-shell-wide youtube-shell">
+          <button class="youtube-facade" type="button" data-youtube-id="NeAGuE4w1fk" data-youtube-title="Inverse Kinematics and Motion Planning for the Alpha5 Manipulator" aria-label="Play the inverse kinematics and motion planning explanation video">
+            <img src="../assets/images/blog/inverse-kinematics/story-poster.jpg" alt="Inverse kinematics and motion planning overview for the Alpha5 manipulator" loading="eager">
+            <span class="youtube-play-icon" aria-hidden="true">▶</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="ik-story-lead" aria-labelledby="story-question">
+      <div class="ik-story-copy">
+        <div class="section-index">The practical question</div>
+        <h2 id="story-question">The robot receives joint positions. The task is described in Cartesian space.</h2>
+        <p>For a position-controlled manipulator, the low-level interface expects a joint vector $q$. A user, planner, or perception system naturally specifies a target point or pose $x_g$. Inverse kinematics is the bridge between these two descriptions.</p>
+        <div class="ik-equation-callout">
+          <span class="equation-label">Forward problem</span>
+          <div>$x=f(q)$</div>
+          <span class="ik-arrow-text">known joints → end-effector pose</span>
+        </div>
+        <div class="ik-equation-callout accent">
+          <span class="equation-label">Inverse problem</span>
+          <div>find $q^*$ such that $f(q^*)\approx x_g$</div>
+          <span class="ik-arrow-text">desired pose → feasible joint configuration</span>
+        </div>
+      </div>
+      <figure class="ik-wide-figure">
+        <img src="../assets/images/blog/inverse-kinematics/ik-pipeline.svg" alt="Pipeline from Cartesian target to inverse kinematics candidates, trajectory planning, Stonefish simulation, and real Alpha5 motion">
+      </figure>
+    </section>
+
+    <div class="content-layout project-content-layout ik-content-layout">
+      <article class="content-panel ik-content-panel">
+        <section id="motivation">
+          <div class="section-index">01 · Motivation</div>
+          <h2>Why inverse kinematics matters for a marine manipulator</h2>
+          <p>Consider a compact Alpha5 arm mounted on a remotely operated or autonomous marine vehicle. A perception system identifies a valve, sample, or object in the robot base frame. The manipulation command is naturally expressed as “place the gripper here,” not as four joint angles.</p>
+          <p>The Alpha5 implementation used here controls a four-joint arm and a gripper. For a position-only target $p_g\in\mathbb{R}^3$, the arm has one extra degree of freedom: several joint configurations may place the gripper at the same point. That redundancy is useful, but it also creates branches, posture choices, and initialization sensitivity.</p>
+
+          <div class="ik-concept-chain" aria-label="Inverse kinematics workflow">
+            <div><span>1</span><strong>Perception / task</strong><small>target $p_g$ or pose $T_g$</small></div>
+            <div><span>2</span><strong>IK</strong><small>one or more feasible $q^*$</small></div>
+            <div><span>3</span><strong>Planning</strong><small>timed sequence $q(t)$</small></div>
+            <div><span>4</span><strong>Position control</strong><small>joint targets sent to the robot</small></div>
+          </div>
+
+          <div class="ik-note important">
+            <strong>The central distinction:</strong> inverse kinematics finds an endpoint. It does not automatically guarantee collision avoidance, smoothness, bounded speed, or a safe grasp approach.
+          </div>
+        </section>
+
+        <section id="formulation">
+          <div class="section-index">02 · Formulation</div>
+          <h2>What exactly are we solving?</h2>
+          <p>For position IK, a general numerical formulation is</p>
+          <div class="ik-math-stage">
+            $$
+            q^*=\arg\min_{q}\ \frac{1}{2}\lVert p(q)-p_g\rVert^2
+            \qquad \text{subject to}\qquad q_{\min}\le q\le q_{\max}.
+            $$
+          </div>
+          <p>If the target is reachable, the minimum can be zero. If it is outside the workspace or blocked by constraints, the optimizer returns the closest feasible configuration. For a full pose task, the residual combines translation and orientation, often using a Lie-group logarithm for the orientation error.</p>
+
+          <div class="ik-two-column">
+            <div class="ik-mini-card">
+              <span class="ik-mini-label">Position task</span>
+              <h3>Three-dimensional residual</h3>
+              <p>$e_p=p_g-p(q)$</p>
+              <p>Useful when the wrist orientation is free or separately prescribed.</p>
+            </div>
+            <div class="ik-mini-card">
+              <span class="ik-mini-label">Pose task</span>
+              <h3>Six-dimensional residual</h3>
+              <p>$e_T=\log\!\left(T(q)^{-1}T_g\right)$</p>
+              <p>Couples translation and orientation and requires consistent frames and weighting.</p>
+            </div>
+          </div>
+        </section>
+
+
+        <section id="analytical">
+          <div class="section-index">03 · Analytical geometry</div>
+          <h2>Closed-form IK exposes the branches directly</h2>
+          <p>When the mechanism has a suitable structure, geometry can solve the inverse problem without iteration. A planar two-link arm is the clearest example. For a target $(x,y)$, define</p>
+          <div class="ik-math-stage">
+            $$
+            c_2=\frac{x^2+y^2-\ell_1^2-\ell_2^2}{2\ell_1\ell_2},
+            \qquad
+            q_2=\operatorname{atan2}\!\left(\pm\sqrt{1-c_2^2},c_2\right),
+            $$
+            $$
+            q_1=\operatorname{atan2}(y,x)-
+            \operatorname{atan2}\!\left(\ell_2\sin q_2,\ell_1+\ell_2\cos q_2\right).
+            $$
+          </div>
+          <p>The $\pm$ sign produces elbow-up and elbow-down branches. This is the main strength of analytical IK: multiplicity is explicit. The price is that the derivation is robot-specific and becomes difficult for general chains, coupled limits, and extra constraints.</p>
+          <figure class="ik-wide-figure framed">
+            <img src="../assets/images/blog/inverse-kinematics/analytical-branches.svg" alt="Planar two-link robot reaching the same target with elbow-up and elbow-down analytical inverse-kinematics solutions" loading="lazy">
+          </figure>
+        </section>
+
+        <section id="families">
+          <div class="section-index">04 · Method families</div>
+          <h2>There is no single universal IK algorithm</h2>
+          <p>IK methods differ mainly in how much robot structure they exploit and how explicitly they represent constraints. The most useful mental model is to group them into analytical, Jacobian-based, and optimization-based families.</p>
+          <figure class="ik-wide-figure framed">
+            <img src="../assets/images/blog/inverse-kinematics/method-family-map.png" alt="Comparison of analytical, Jacobian-based, and optimization-based inverse kinematics families" loading="lazy">
+          </figure>
+
+          <div class="ik-decision-grid">
+            <div><span>Known geometric structure</span><strong>Analytical / geometric IK</strong><p>Excellent when closed-form branches can be derived and enumerated.</p></div>
+            <div><span>Fast online correction</span><strong>Jacobian methods</strong><p>Natural for differential motion, visual servoing, and small target updates.</p></div>
+            <div><span>Many explicit limits</span><strong>QP / nonlinear optimization</strong><p>Best when joint bounds, posture costs, task priorities, or other constraints matter.</p></div>
+          </div>
+        </section>
+
+        <section id="jacobian">
+          <div class="section-index">05 · The local map</div>
+          <h2>The Jacobian converts joint motion into end-effector motion</h2>
+          <p>A numerical IK method repeatedly linearizes the forward kinematics around the current configuration:</p>
+          <div class="equation-panel ik-equation-panel">
+            <div>
+              <span class="equation-label">Differential kinematics</span>
+              $$\dot p=J_p(q)\dot q$$
+            </div>
+            <div>
+              <span class="equation-label">Revolute-joint column</span>
+              $$J_{p,i}=a_i\times\bigl(p_{ee}-p_i\bigr)$$
+            </div>
+          </div>
+          <p>The cross product has a direct geometric meaning: rotating joint $i$ around axis $a_i$ sweeps the end-effector along the tangent to a circle centered at the joint origin $p_i$.</p>
+
+          <div class="ik-note">
+            <strong>Local means local.</strong> The Jacobian predicts the effect of a small joint displacement. It does not reveal a distant branch that initially requires the Cartesian error to increase.
+          </div>
+        </section>
+
+        <section id="jacobian-transpose">
+          <div class="section-index">06 · Jacobian transpose</div>
+          <h2>A simple direction that pulls the robot toward the target</h2>
+          <p>The Jacobian-transpose update uses the task-space error as a virtual force and maps it into joint space:</p>
+          <div class="ik-math-stage compact">
+            $$
+            \Delta q=\alpha J(q)^\top e,
+            \qquad e=p_g-p(q).
+            $$
+          </div>
+          <p>It is inexpensive, easy to implement, and often effective away from difficult geometries. A practical implementation scales the step, clips each joint increment, and projects the result back into the joint limits. Its limitations are slow convergence, sensitivity to the gain, and the possibility of stagnation.</p>
+
+          <div class="ik-video-block">
+            <div class="ik-video-heading">
+              <div><span class="result-label">Stonefish + real Alpha5</span><h3>Jacobian transpose tracking</h3></div>
+              <p>The real arm and the Stonefish interface are shown side by side while the local update moves the gripper toward the target.</p>
+            </div>
+            <div class="video-shell video-shell-wide">
+              <video controls preload="metadata" playsinline data-seekable-video poster="../assets/images/blog/inverse-kinematics/jt-poster.jpg">
+                <source src="../assets/videos/blog/alpha5-jacobian-transpose.mp4" type="video/mp4">
+                Your browser does not support the video element.
+              </video>
+              <div class="video-unavailable"><div><strong>Video unavailable</strong>The Jacobian-transpose demonstration could not be loaded.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="dls">
+          <div class="section-index">07 · Pseudoinverse and damping</div>
+          <h2>Least squares chooses the joint step that best explains the task error</h2>
+          <p>The Moore–Penrose pseudoinverse solves the local least-squares problem. Near a singularity, however, small task-space errors can demand very large joint motion. Damped least squares regularizes the inversion:</p>
+          <div class="ik-math-stage">
+            $$
+            \Delta q
+            =\left(J^\top J+\lambda^2I\right)^{-1}J^\top e
+            =J^\top\left(JJ^\top+\lambda^2I\right)^{-1}e.
+            $$
+          </div>
+          <div class="ik-three-points">
+            <div><strong>Small $\lambda$</strong><span>accurate but sensitive near singularities</span></div>
+            <div><strong>Large $\lambda$</strong><span>stable but slower and more biased</span></div>
+            <div><strong>Adaptive damping</strong><span>increase damping when a proposed step fails</span></div>
+          </div>
+          <p>In the Alpha5 implementation, DLS is combined with joint-step clipping and backtracking. A step is accepted only when it does not increase the Cartesian residual. This improves numerical behavior, but it does not remove the local nature of the method.</p>
+        </section>
+
+        <section id="qp">
+          <div class="section-index">08 · Quadratic programming</div>
+          <h2>QP makes constraints part of the update rather than an afterthought</h2>
+          <p>A velocity-level QP solves the same local tracking problem while making bounds explicit:</p>
+          <div class="ik-math-stage">
+            $$
+            \begin{aligned}
+            \min_{\Delta q}\quad &\frac{1}{2}\lVert J\Delta q-e\rVert^2
+            +\frac{\lambda}{2}\lVert\Delta q\rVert^2\\
+            \text{s.t.}\quad &\max(q_{\min}-q,-\Delta q_{\max})
+            \le\Delta q\\
+            &\le\min(q_{\max}-q,\Delta q_{\max}).
+            \end{aligned}
+            $$
+          </div>
+          <p>Additional costs can prefer a nominal posture, and equality or inequality constraints can freeze a joint, impose velocity limits, or encode locally linearized safety conditions. Yet a QP based on the current Jacobian is still a local solver: constraints improve feasibility, not global branch discovery.</p>
+
+          <details class="ik-code-details">
+            <summary>Implementation pattern: one bounded QP step</summary>
+            <pre><code>H  = J.T @ J + lam * I
+g  = -(J.T @ error)
+lb = maximum(q_min - q, -max_step)
+ub = minimum(q_max - q, +max_step)
+
+dq = solve_qp(H, g, lb, ub)
+q  = clip(q + dq, q_min, q_max)</code></pre>
+          </details>
+        </section>
+
+        <section id="local-minima">
+          <div class="section-index">09 · Failure mode</div>
+          <h2>Why a reachable target can end in a nonzero residual</h2>
+          <p>The objective $\lVert p(q)-p_g\rVert^2$ is nonlinear and generally nonconvex. Joint limits split the feasible set, redundant arms admit multiple branches, and a local step may be unable to cross a region where the error temporarily increases. The result is a stalled solver even though another configuration reaches the target.</p>
+
+          <figure class="ik-wide-figure framed">
+            <img src="../assets/images/blog/inverse-kinematics/local-vs-global.png" alt="Error landscape illustrating a single local solver seed and multi-start exploration of several basins" loading="lazy">
+          </figure>
+          <figure class="project-figure ik-video-still">
+            <img src="../assets/images/blog/inverse-kinematics/local-minimum.jpg" alt="Educational animation showing a damped least-squares residual settling above the target tolerance" loading="lazy">
+            <figcaption>Damping improves conditioning, but it cannot reveal a distant nonlinear branch that is absent from the current linearization.</figcaption>
+          </figure>
+
+          <div class="ik-myth-grid">
+            <div><strong>Reachable target</strong><span>There exists at least one feasible $q^*$.</span></div>
+            <div><strong>Local convergence</strong><span>The chosen seed lies in a basin leading to that solution.</span></div>
+            <div><strong>Global guarantee</strong><span>Neither DLS nor a local QP provides this in general.</span></div>
+          </div>
+        </section>
+
+        <section id="multistart">
+          <div class="section-index">10 · Multi-start branch search</div>
+          <h2>Use several initial configurations to expose more kinematic branches</h2>
+          <p>The practical solution implemented for Alpha5 is deterministic multi-start IK. Instead of trusting one home configuration, the same local solver is initialized from several base-angle branches and several posture templates. Every converged candidate is evaluated using the true forward-kinematics residual.</p>
+
+          <figure class="ik-wide-figure framed">
+            <img src="../assets/images/blog/inverse-kinematics/multistart-branch.svg" alt="Branch-aware multi-start inverse kinematics with base-angle seeds, local solvers, and candidate ranking" loading="lazy">
+          </figure>
+
+          <div class="ik-math-stage compact">
+            $$
+            S_i=\lVert p(q_i)-p_g\rVert
+            +\lambda_q\left\lVert\frac{q_i-q_{\mathrm{ref}}}{q_{\max}-q_{\min}}\right\rVert
+            +\lambda_b\,d(q_{1,i},q_{1,\mathrm{pref}}).
+            $$
+          </div>
+          <p>The Cartesian residual remains the primary criterion. Joint motion and branch preference are weak tie-breakers. A hard-branch mode can first filter candidates near a requested $q_1$ branch, but the implementation deliberately falls back to the best reachable candidate when that branch is unavailable.</p>
+
+          <div class="ik-note warning">
+            <strong>Important:</strong> multi-start broadens basin coverage; it does not prove global optimality. It is most appropriate for solve-once IK before planning—not for repeatedly switching branches inside a one-step servo loop.
+          </div>
+
+          <div class="ik-video-block">
+            <div class="ik-video-heading">
+              <div><span class="result-label">Branch-aware experiment</span><h3>Damped least squares with multiple initializations</h3></div>
+              <p>The side-by-side real and simulated behavior shows how alternative seeds allow the solver to reach configurations missed from a single initialization.</p>
+            </div>
+            <div class="video-shell video-shell-wide">
+              <video controls preload="metadata" playsinline data-seekable-video poster="../assets/images/blog/inverse-kinematics/dls-poster.jpg">
+                <source src="../assets/videos/blog/alpha5-dls-multistart.mp4" type="video/mp4">
+                Your browser does not support the video element.
+              </video>
+              <div class="video-unavailable"><div><strong>Video unavailable</strong>The DLS multi-start demonstration could not be loaded.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="nullspace">
+          <div class="section-index">11 · Redundancy</div>
+          <h2>Use the null space to shape posture without disturbing the main task</h2>
+          <p>When the robot has more controllable joints than task dimensions, the pseudoinverse leaves directions that do not change the end-effector velocity to first order:</p>
+          <div class="ik-math-stage compact">
+            $$
+            \dot q=J^\dagger v
+            +\underbrace{\left(I-J^\dagger J\right)}_{N(q)}\dot q_0.
+            $$
+          </div>
+          <p>The secondary command $\dot q_0$ can move the arm toward a preferred posture, away from a joint limit, or toward higher manipulability. For Alpha5 position IK, joint 4 can also be fixed explicitly when a prescribed wrist orientation is more important than using it as a redundant variable.</p>
+        </section>
+
+        <section id="planning">
+          <div class="section-index">12 · From endpoint to motion</div>
+          <h2>IK gives a configuration; planning decides how the robot gets there</h2>
+          <p>Sending the final IK vector directly to a position-controlled robot can produce an abrupt, poorly timed motion. The implementation therefore separates endpoint selection from trajectory generation.</p>
+
+          <div class="ik-planning-compare">
+            <div>
+              <span class="ik-mini-label">Joint-space quintic</span>
+              <h3>Smooth joint motion</h3>
+              $$q(t)=q_0+s(t)(q_f-q_0)$$
+              $$s(\tau)=10\tau^3-15\tau^4+6\tau^5$$
+              <p>Zero initial and final joint velocity and acceleration. The end-effector path is generally curved.</p>
+            </div>
+            <div>
+              <span class="ik-mini-label">Cartesian line + differential IK</span>
+              <h3>Geometric approach path</h3>
+              $$p_d(t)=p_0+s(t)(p_g-p_0)$$
+              $$\dot q=J_\lambda^\dagger\bigl(\dot p_d+K_p(p_d-p)\bigr)+N\dot q_0$$
+              <p>Tracks an approximately straight TCP path while enforcing Cartesian and joint-speed caps.</p>
+            </div>
+          </div>
+
+          <figure class="project-figure ik-video-still">
+            <img src="../assets/images/blog/inverse-kinematics/planning-comparison.jpg" alt="Animation comparing smooth joint-space motion with a Cartesian differential inverse-kinematics path" loading="lazy">
+            <figcaption>The same start and goal can produce very different paths because “smooth joints” and “straight Cartesian motion” are different objectives.</figcaption>
+          </figure>
+
+          <div class="ik-video-block">
+            <div class="ik-video-heading">
+              <div>
+                <span class="result-label">Pick-and-place demonstration</span>
+                <h3>Planning in joint space</h3>
+              </div>
+              <p>
+                The complete task combines IK endpoint selection, a smooth trajectory,
+                a controlled approach, and gripper actuation.
+              </p>
+            </div>
+
+            <div class="video-shell video-shell-wide">
+              <video
+                controls
+                preload="metadata"
+                playsinline
+                data-seekable-video
+                poster="../assets/images/blog/inverse-kinematics/alpha5-pick-place-first-frame.jpg"
+              >
+                <source
+                  src="../assets/videos/blog/alpha5_pick_place.mp4"
+                  type="video/mp4"
+                >
+                Your browser does not support the video element.
+              </video>
+
+              <div class="video-unavailable">
+                <div>
+                  <strong>Video unavailable</strong>
+                  The local MP4 could not be loaded.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="grasping">
+          <div class="section-index">13 · Position-gated grasping</div>
+          <h2>Do not close the gripper merely because the planned time has elapsed</h2>
+          <p>A robust manipulation sequence gates closure on measured task-space convergence. The implemented state machine first moves to a pregrasp configuration, approaches slowly, waits until the TCP error remains below a threshold for a dwell interval, and only then closes while holding the target.</p>
+
+          <div class="ik-state-machine" aria-label="Alpha5 grasp state machine">
+            <div class="active"><span>1</span><strong>Open</strong></div>
+            <i>→</i>
+            <div><span>2</span><strong>Align to pregrasp</strong></div>
+            <i>→</i>
+            <div><span>3</span><strong>Slow approach</strong></div>
+            <i>→</i>
+            <div><span>4</span><strong>Close while holding</strong></div>
+            <i>→</i>
+            <div class="done"><span>5</span><strong>Done</strong></div>
+          </div>
+
+          <figure class="project-figure ik-video-still">
+            <img src="../assets/images/blog/inverse-kinematics/position-gate.jpg" alt="Position-gated gripper closure with approach, dwell, close, and done states" loading="lazy">
+            <figcaption>The gate checks position convergence. Contact force and object retention require additional sensing and are not established by IK alone.</figcaption>
+          </figure>
+        </section>
+
+        <section id="sim-to-real">
+          <div class="section-index">14 · Stonefish to real Alpha5</div>
+          <h2>Use one mathematical model, but verify every interface convention</h2>
+          <p>The same kinematic core is used in simulation and on the physical arm. The practical difficulty is not only the solver—it is maintaining consistent frames, joint order, limits, units, and command semantics.</p>
+
+          <div class="ik-deployment-grid">
+            <div>
+              <span class="result-label">Task convention</span>
+              <h3>User-facing target</h3>
+              <p>$[x_{forward},y_{left},z_{down}]$</p>
+            </div>
+            <div>
+              <span class="result-label">Alpha5 base convention</span>
+              <h3>Kinematic target</h3>
+              <p>$[x_{forward},y_{down},z_{left}]$</p>
+            </div>
+            <div>
+              <span class="result-label">Command path</span>
+              <h3>Joint-state interface</h3>
+              <p>Map the selected $q(t)$ into the simulator or real-robot joint names without changing the IK mathematics.</p>
+            </div>
+          </div>
+
+          <div class="ik-note warning">
+            <strong>Safety scope:</strong> joint limits and bounded steps are necessary but not sufficient. Geometry-based self-collision, environment collision, actuator limits, and target verification must be handled by the planning and safety layers before enabling real output.
+          </div>
+        </section>
+
+        <section id="recipe">
+          <div class="section-index">15 · Practical recipe</div>
+          <h2>A reliable solve–select–plan–execute workflow</h2>
+          <ol class="ik-recipe">
+            <li><span>1</span><div><strong>Express the target in the correct base frame.</strong><p>Verify axis signs, units, and the controlled TCP frame.</p></div></li>
+            <li><span>2</span><div><strong>Try a local solve from the current configuration.</strong><p>Use DLS or QP with joint bounds, step limits, and a clear residual tolerance.</p></div></li>
+            <li><span>3</span><div><strong>Detect stagnation rather than waiting indefinitely.</strong><p>Monitor residual reduction and accepted-step size.</p></div></li>
+            <li><span>4</span><div><strong>Run deterministic multi-start when needed.</strong><p>Cover representative base-angle branches and posture templates.</p></div></li>
+            <li><span>5</span><div><strong>Rank complete candidate configurations.</strong><p>Prioritize task residual, feasibility, and continuity with the current robot state.</p></div></li>
+            <li><span>6</span><div><strong>Plan a timed trajectory to the selected endpoint.</strong><p>Choose joint-space smoothness or Cartesian path geometry according to the task.</p></div></li>
+            <li><span>7</span><div><strong>Execute with state feedback and a position gate.</strong><p>Approach slowly, dwell within tolerance, then close the gripper.</p></div></li>
+          </ol>
+        </section>
+
+        <section id="takeaways">
+          <div class="section-index">16 · Takeaways</div>
+          <h2>The most important ideas</h2>
+          <div class="insight-grid ik-takeaway-grid">
+            <div class="insight-card"><h3>The Jacobian is a local model</h3><p>It is powerful for small corrections, but it sees only the neighborhood of the current configuration.</p></div>
+            <div class="insight-card"><h3>Damping handles singularity—not nonconvexity</h3><p>DLS stabilizes the inversion while leaving the basin-of-attraction problem intact.</p></div>
+            <div class="insight-card"><h3>QP handles constraints—not distant branches</h3><p>A local QP can respect bounds and priorities while still converging to the wrong basin.</p></div>
+            <div class="insight-card"><h3>Multi-start broadens coverage</h3><p>It converts initialization from a hidden assumption into an explicit search design.</p></div>
+            <div class="insight-card"><h3>IK is not planning</h3><p>A valid endpoint still requires timing, speed, smoothness, collision checking, and execution logic.</p></div>
+            <div class="insight-card"><h3>Simulation is a verification stage</h3><p>Stonefish exposes frame and interface errors before the same command path is enabled on the real Alpha5.</p></div>
+          </div>
+        </section>
+      </article>
+
+      <aside class="sidebar-card ik-sidebar">
+        <h3>On this page</h3>
+        <a href="#motivation">Why IK matters</a>
+        <a href="#formulation">Problem formulation</a>
+        <a href="#analytical">Analytical geometry</a>
+        <a href="#families">Method families</a>
+        <a href="#jacobian">Jacobian map</a>
+        <a href="#jacobian-transpose">Jacobian transpose</a>
+        <a href="#dls">Damped least squares</a>
+        <a href="#qp">Quadratic programming</a>
+        <a href="#local-minima">Local minima</a>
+        <a href="#multistart">Multi-start search</a>
+        <a href="#nullspace">Null-space posture</a>
+        <a href="#planning">Motion planning</a>
+        <a href="#grasping">Position-gated grasp</a>
+        <a href="#sim-to-real">Stonefish to real robot</a>
+        <a href="#recipe">Practical workflow</a>
+        <a href="#takeaways">Takeaways</a>
+        <a class="ik-back-link" href="index.html">← Back to robotics blog</a>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+    <span class="footer-links">
+      <a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+      <a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+    </span>
+  </footer>
+</body>
+</html>

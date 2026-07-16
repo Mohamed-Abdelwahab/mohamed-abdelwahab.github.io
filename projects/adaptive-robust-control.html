@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Adaptive robust feedback linearization for robotic manipulators with unknown model uncertainty.">
+  <meta name="author" content="Mohamed Abdelwahab">
+  <meta name="theme-color" content="#07111f">
+  <title>Adaptive Robust Feedback Linearization · Mohamed Abdelwahab</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../scripts.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="brand" href="../index.html" aria-label="Mohamed Abdelwahab home">
+      <span class="brand-mark">MA</span>
+      <span class="brand-name">Mohamed Abdelwahab</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="nav-links">
+      <a href="../index.html">Home</a>
+      <a class="active" href="../projects/index.html">Projects</a>
+      <a href="../demos/index.html">Demos</a>
+      <a href="../publications.html">Publications</a>
+      <a href="../blog/index.html">Robotics Blog</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="page-hero project-hero-compact">
+      <div class="card-kicker">Adaptive and robust control</div>
+      <h1>Adaptive Robust Feedback Linearization</h1>
+      <p>A Lyapunov-driven controller that learns how much robust action is required from the observed closed-loop behavior—without requiring a known bound on the manipulator model mismatch.</p>
+      <div class="hero-meta">
+        <div class="tag-list">
+          <span>Feedback linearization</span>
+          <span>Adaptive robust control</span>
+          <span>Lyapunov stability</span>
+          <span>Robot manipulation</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-video-feature" aria-labelledby="arfbl-video-title">
+      <div class="feature-video-heading">
+        <div>
+          <div class="card-kicker">Method explanation</div>
+          <h2 id="arfbl-video-title">How the controller adapts robustness online</h2>
+        </div>
+        <p>The animation develops the problem, the Lyapunov monitor, the adaptive gain law, and the two evaluation scenarios in a single sequence.</p>
+      </div>
+      <div class="feature-video-frame">
+        <div class="video-shell video-shell-wide youtube-shell">
+          <button aria-label="Play the Adaptive Robust Feedback Linearization explanation video" class="youtube-facade" data-youtube-id="wfShzeLJfzg" data-youtube-title="Adaptive Robust Feedback Linearization" type="button">
+            <img alt="Adaptive Robust Feedback Linearization controller and online gain update" loading="eager" src="../assets/images/projects/arfbl/adaptive_law.jpg">
+            <span aria-hidden="true" class="youtube-play-icon">▶</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-layout project-content-layout">
+      <article class="content-panel">
+        <section id="problem">
+          <div class="section-index">01 · Motivation</div>
+          <h2>Why model uncertainty breaks classical feedback linearization</h2>
+          <p>For a robotic manipulator, inverse-dynamics control attempts to cancel the nonlinear inertia, Coriolis, centrifugal, and gravity terms. With an exact model, the closed-loop tracking dynamics become linear and decoupled. In practice, payload variation, friction, unmodeled dynamics, and external disturbances make the available model only an approximation.</p>
+          <div class="equation-panel">
+            <div>
+              <span class="equation-label">Manipulator dynamics</span>
+              $$M(q)\ddot q+C(q,\dot q)\dot q+g(q)=\tau$$
+            </div>
+            <div>
+              <span class="equation-label">Nominal feedback linearization</span>
+              $$\tau=\widehat M(q)\bigl(\ddot q_d+K_Pe+K_D\dot e\bigr)+\widehat n(q,\dot q)$$
+            </div>
+          </div>
+          <figure class="project-figure">
+            <img src="../assets/images/projects/arfbl/problem.jpg" alt="Manipulator with desired and actual poses under uncertain dynamics" loading="lazy">
+            <figcaption>The controller only has estimated dynamics; unknown payloads, changing friction, and disturbances create a state-dependent residual.</figcaption>
+          </figure>
+        </section>
+
+        <section id="gap">
+          <div class="section-index">02 · Control gap</div>
+          <h2>Classical robust control needs a bound that may not exist</h2>
+          <p>Introducing a robust action $w$ can recover convergence when its gain satisfies $\rho\geq\lVert\eta\rVert$, where $\eta$ is the unknown mismatch entering the error dynamics. This requirement is difficult to satisfy for black-box or learned robot models because the worst-case approximation error is usually unavailable across the state space.</p>
+          <div class="method-figure-grid">
+            <figure class="project-figure">
+              <img src="../assets/images/projects/arfbl/feedback_linearization.jpg" alt="Computed-torque feedback linearization block diagram" loading="lazy">
+              <figcaption>Computed torque cancels the nonlinear terms only to the extent that the model is accurate.</figcaption>
+            </figure>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/arfbl/uncertainty_gap.jpg" alt="Comparison between known-bound robust control and learned dynamics without a known error bound" loading="lazy">
+              <figcaption>The central design question is whether sufficient robustness can be inferred directly from closed-loop behavior.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="mechanism">
+          <div class="section-index">03 · Adaptive mechanism</div>
+          <h2>Use the Lyapunov derivative as closed-loop evidence</h2>
+          <p>Define the error state $\xi=[e^\top\;\dot e^\top]^\top$, a quadratic Lyapunov function $V(\xi)=\xi^\top Q\xi$, and the robust direction $z=D^\top Q\xi$. The sign of $\dot V$ reveals whether the current gain is sufficient: negative values indicate contraction, while nonnegative or nearly nonnegative values indicate that the uncertainty is not being adequately compensated.</p>
+          <figure class="project-figure">
+            <img src="../assets/images/projects/arfbl/lyapunov_monitor.jpg" alt="Lyapunov bowl and error-state trajectory moving uphill or downhill" loading="lazy">
+            <figcaption>The controller does not estimate a worst-case uncertainty bound; it observes whether the tracking error is moving downhill in the Lyapunov landscape.</figcaption>
+          </figure>
+
+          <div class="adaptive-law-panel">
+            <div class="adaptive-law-copy">
+              <span class="equation-label">Boundary-layer robust term</span>
+              $$
+              w=\begin{cases}
+              \rho\,z/\lVert z\rVert, & \lVert z\rVert\geq\epsilon,\\[2mm]
+              \rho\,z/\epsilon, & \lVert z\rVert<\epsilon,
+              \end{cases}
+              $$
+            </div>
+            <div class="adaptive-law-copy">
+              <span class="equation-label">Final adaptive update law</span>
+              $$
+              \dot\rho=\begin{cases}
+              k_\rho, & \dot V\geq-\epsilon_1\ \text{and}\ \lVert z\rVert\geq\epsilon,\\[1mm]
+              0, & \text{otherwise.}
+              \end{cases}
+              $$
+            </div>
+          </div>
+
+          <figure class="project-figure">
+            <img src="../assets/images/projects/arfbl/adaptive_law.jpg" alt="Adaptive robust controller with Lyapunov monitor, gain update, memory, and robust action" loading="lazy">
+            <figcaption>When the Lyapunov condition is violated outside the boundary layer, $\rho$ increases and its attained value is retained; the larger robust action then drives the error back toward contraction.</figcaption>
+          </figure>
+        </section>
+
+        <section id="guarantee">
+          <div class="section-index">04 · Stability</div>
+          <h2>What the analysis guarantees</h2>
+          <div class="insight-grid">
+            <div class="insight-card">
+              <h3>No numerical uncertainty bound is required</h3>
+              <p>The proof assumes that finite bounds exist, but their values are not used by the controller.</p>
+            </div>
+            <div class="insight-card">
+              <h3>The adaptive gain remains bounded</h3>
+              <p>Once $\rho$ is sufficiently large, $\dot V$ becomes negative and the update stops.</p>
+            </div>
+            <div class="insight-card">
+              <h3>Tracking enters a boundary region</h3>
+              <p>With the modified update law, the error state converges to $S_\epsilon=\{\xi:\lVert D^\top Q\xi\rVert<\epsilon\}$.</p>
+            </div>
+          </div>
+          <p>The boundary layer avoids discontinuous high-frequency switching near $z=0$. Its thickness is governed by $\epsilon$, which creates the expected trade-off between tracking precision and chattering attenuation.</p>
+        </section>
+
+        <section id="evaluation">
+          <div class="section-index">05 · Evaluation</div>
+          <h2>Two tests isolate the contribution of adaptation</h2>
+          <div class="result-block">
+            <div class="result-copy">
+              <span class="result-label">Experiment 1 · Perturbed analytical model</span>
+              <h3>Comparable tracking without using the known bound</h3>
+              <p>Because the perturbed model admits an analytical uncertainty bound, the adaptive method can be compared directly with conventional robust feedback linearization. ARFBL approaches the known-bound controller while computing $\rho$ from the Lyapunov condition rather than from prior uncertainty information.</p>
+            </div>
+            <figure class="project-figure">
+              <img src="../assets/images/projects/arfbl/known_bound_results.jpg" alt="Tracking error and adaptive robust gain for ARFBL versus robust feedback linearization" loading="lazy">
+              <figcaption>The gain rises only while additional robust action is needed and then settles.</figcaption>
+            </figure>
+          </div>
+
+          <div class="result-block">
+            <div class="result-copy">
+              <span class="result-label">Experiment 2 · Gaussian-Process dynamics</span>
+              <h3>Robustness when the learned-model bound is unavailable</h3>
+              <p>Both controllers use the same GP dynamics estimate. Standard feedback linearization exhibits large error peaks when the learned model does not cancel the nonlinear dynamics. Adding the adaptive robust term substantially reduces the joint-space tracking error and produces smoother, lower-magnitude torque trajectories.</p>
+            </div>
+            <div class="method-figure-grid">
+              <figure class="project-figure">
+                <img src="../assets/images/projects/arfbl/gp_results.jpg" alt="Comparison of FBL plus Gaussian Process dynamics and ARFBL plus Gaussian Process dynamics" loading="lazy">
+                <figcaption>The GP model is unchanged; the performance difference comes from the adaptive robust correction.</figcaption>
+              </figure>
+              <figure class="project-figure">
+                <img src="../assets/images/projects/arfbl/rmse_summary.jpg" alt="Joint-space RMSE comparison between FBL plus GP and ARFBL plus GP" loading="lazy">
+                <figcaption>The video summary highlights the reduction in joint-space RMSE obtained by adding ARFBL to the learned model.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section id="takeaway">
+          <div class="section-index">06 · Takeaway</div>
+          <h2>Robustness is adapted from observed behavior</h2>
+          <p>The method converts a difficult modeling requirement—knowing a global uncertainty bound—into a closed-loop adaptation problem. The controller increases its robust authority only when the Lyapunov evidence shows that the current compensation is insufficient, making it particularly suitable for robot models learned from data.</p>
+        </section>
+      </article>
+
+      <aside class="sidebar-card">
+        <h3>On this page</h3>
+        <a href="#problem">Motivation</a>
+        <a href="#gap">Control gap</a>
+        <a href="#mechanism">Adaptive mechanism</a>
+        <a href="#guarantee">Stability result</a>
+        <a href="#evaluation">Evaluation</a>
+        <a href="#takeaway">Takeaway</a>
+      </aside>
+    </div>
+
+    <section class="citation-box" aria-labelledby="citation-heading">
+      <div class="citation-actions">
+        <div>
+          <div class="card-kicker">Associated publication</div>
+          <h2 id="citation-heading">Adaptive Robust Controller for Handling Unknown Uncertainty of Robotic Manipulators</h2>
+        </div>
+        <button class="copy-button" data-copy-target="arfbl-bib" type="button">Copy BibTeX</button>
+      </div>
+      <div class="button-row compact">
+        <a class="paper-button" href="../assets/pdfs/adaptive_robust_control_unknown_uncertainty.pdf">Paper PDF</a>
+        <a class="paper-button" href="https://ieeexplore.ieee.org/document/10711372">IEEE Xplore</a>
+        <a class="paper-button" href="https://doi.org/10.1109/CASE59546.2024.10711372">DOI</a>
+      </div>
+      <pre class="bibtex" id="arfbl-bib"><code>@inproceedings{abdelwahab2024adaptive,
+  author    = {Mohamed Abdelwahab and Giulio Giacomuzzo and Alberto Dalla Libera and Ruggero Carli},
+  title     = {Adaptive Robust Controller for Handling Unknown Uncertainty of Robotic Manipulators},
+  booktitle = {2024 IEEE 20th International Conference on Automation Science and Engineering (CASE)},
+  year      = {2024},
+  pages     = {2992--2997},
+  doi       = {10.1109/CASE59546.2024.10711372}
+}</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+    <span class="footer-links">
+      <a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+      <a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+    </span>
+  </footer>
+</body>
+</html>

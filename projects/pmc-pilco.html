@@ -1,0 +1,49 @@
+ <!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="A Gaussian-Process-based model-based reinforcement learning framework designed to reduce stochastic rollout cost and support sample-efficient robot control." name="description"/>
+<meta content="Mohamed Abdelwahab" name="author"/>
+<meta content="#07111f" name="theme-color"/>
+<title>P-MC-PILCO: Computationally Efficient Model-Based Reinforcement Learning · Mohamed Abdelwahab</title>
+<link href="../styles.css" rel="stylesheet"/>
+<script defer="" src="../scripts.js"></script>
+<script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+      </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header aria-label="Primary navigation" class="site-header">
+<a aria-label="Mohamed Abdelwahab home" class="brand" href="../index.html">
+<span class="brand-mark">MA</span>
+<span class="brand-name">Mohamed Abdelwahab</span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" class="nav-toggle" type="button">Menu</button>
+<nav class="nav-links" id="site-nav">
+<a href="../index.html">Home</a>
+<a class="active" href="../projects/index.html">Projects</a>
+<a href="../demos/index.html">Demos</a>
+<a href="../publications.html">Publications</a>
+<a href="../blog/index.html">Robotics Blog</a>
+</nav>
+</header>
+<main id="main-content">
+<section class="page-hero"><div class="card-kicker">Robot learning</div><h1>P-MC-PILCO: Computationally Efficient Model-Based Reinforcement Learning</h1><p>A Gaussian-Process-based model-based reinforcement learning framework designed to reduce stochastic rollout cost and support sample-efficient robot control.</p><div class="hero-meta"><div class="tag-list"><span>Gaussian Processes</span><span>Model-Based RL</span><span>Uncertainty propagation</span><span>Robot control</span></div></div></section>
+<div class="content-layout">
+<article class="content-panel"><section id="problem"><h2>Problem</h2><p>Gaussian-Process model-based reinforcement learning is attractive for robot control because it is data-efficient and represents epistemic uncertainty. Its main bottleneck is the computational cost of repeatedly sampling and evaluating exact GP posteriors across long stochastic rollouts.</p></section><section id="method"><h2>Method</h2><p>P-MC-PILCO replaces repeated exact posterior evaluations with computationally efficient GP approximations and samples coherent dynamics functions in weight space. A policy is optimized through stochastic rollouts while preserving trajectory-level uncertainty.</p><figure class="project-figure"><img alt="Gaussian Process rollout step for uncertainty-aware trajectory tracking" loading="lazy" src="../assets/images/projects/pmc-pilco.jpg"/><figcaption>A Gaussian-Process rollout step in the uncertainty-aware trajectory-tracking pipeline.</figcaption></figure></section><section id="evaluation"><h2>Evaluation</h2><p>The framework is evaluated across nonlinear simulation benchmarks and on a real 7-DoF Franka Emika Panda, where it performs high-frequency trajectory tracking using policies optimized from Gaussian-Process dynamics models.</p><ul><li>Nonlinear control benchmarks including cart-pole, double pendulum on cart, and MuJoCo Swimmer.</li><li>Real-robot trajectory tracking on a 7-DoF Franka Emika Panda.</li><li>Comparison of prediction cost, policy-optimization time, tracking error, and sample efficiency.</li></ul><div class="evaluation-video-card"><div class="evaluation-video-heading"><div class="card-kicker">Real-robot evaluation</div><h3>P-MC-PILCO on the Franka Emika Panda</h3><p>The experiment shows reference-versus-actual joint trajectories together with tracking errors and commanded torques during closed-loop execution.</p></div><div class="video-shell youtube-shell evaluation-youtube-shell"><button aria-label="Play the Franka Emika Panda evaluation video" class="youtube-facade" data-youtube-id="GVZH6ffUfTM" data-youtube-title="P-MC-PILCO evaluation on the Franka Emika Panda" type="button"><img alt="First frame of the Franka Emika Panda evaluation" loading="lazy" src="../assets/images/demo-first-frames/franka-panda.jpg"/><span aria-hidden="true" class="youtube-play-icon">▶</span></button></div></div></section><section id="contribution"><h2>Research contribution</h2><p>The work studies how structured GP approximations can improve the computational scalability of uncertainty-aware model-based RL while retaining practical closed-loop performance.</p></section></article>
+<aside class="sidebar-card"><h3>On this page</h3><a href="#problem">Problem</a><a href="#method">Method</a><a href="#evaluation">Evaluation</a><a href="#contribution">Research contribution</a><a href="../demos/index.html">Related demos</a><a href="../publications.html">Publications</a></aside>
+</div>
+</main>
+<footer class="footer">
+<span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+<span class="footer-links">
+<a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+<a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+</span>
+</footer>
+</body>
+</html>

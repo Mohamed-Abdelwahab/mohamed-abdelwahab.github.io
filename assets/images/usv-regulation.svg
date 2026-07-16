@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="hsl(190 70% 10%)"/><stop offset="1" stop-color="hsl(255 55% 17%)"/></linearGradient><pattern id="p" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#94a3b8" stroke-opacity=".08"/></pattern></defs>
+<rect width="1600" height="900" fill="url(#g)"/><rect width="1600" height="900" fill="url(#p)"/>
+<circle cx="1240" cy="170" r="330" fill="hsl(190 90% 60%)" opacity=".10"/><circle cx="290" cy="790" r="370" fill="hsl(270 90% 65%)" opacity=".09"/>
+<rect x="120" y="110" width="1360" height="680" rx="48" fill="#06111d" fill-opacity=".46" stroke="#67e8f9" stroke-opacity=".23"/>
+<path d="M300 590 C480 340, 630 650, 810 400 S1120 300,1300 510" fill="none" stroke="#67e8f9" stroke-width="18" stroke-linecap="round" opacity=".9"/>
+<circle cx="300" cy="590" r="25" fill="#34d399"/><circle cx="1300" cy="510" r="25" fill="#a78bfa"/>
+<text x="800" y="300" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="76" font-weight="800">USV Regulation Control</text>
+<text x="800" y="380" text-anchor="middle" fill="#a8b5c8" font-family="system-ui,sans-serif" font-size="34">Surface Vehicle · Regulation</text>
+<circle cx="800" cy="560" r="78" fill="#ffffff" fill-opacity=".10" stroke="#ffffff" stroke-opacity=".35"/><path d="M780 515l75 45-75 45z" fill="#fff" opacity=".9"/>
+<text x="800" y="720" text-anchor="middle" fill="#7f8da3" font-family="system-ui,sans-serif" font-size="25">Video placeholder · replace the matching MP4 file</text>
+</svg>

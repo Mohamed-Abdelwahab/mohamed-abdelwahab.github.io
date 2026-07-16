@@ -1,0 +1,10 @@
+.quarto/
+__pycache__/
+*.pyc
+.DS_Store
+FILE_INVENTORY*.txt
+README_IK_BLOG.md
+README.txt
+__pycache__/
+*.pyc
+.DS_Store
