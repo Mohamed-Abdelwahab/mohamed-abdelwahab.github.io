@@ -49,8 +49,3 @@ assets/videos/adaptive_robust_control_paper_scene.mp4
 assets/videos/gp_robust_control_preview.mp4
 ```
 
-All included MP4 files place their metadata before the media payload (`faststart`). The Franka video has also been converted from MPEG-4 Part 2 to H.264 for broader browser support. Each video has native controls and additional ±10-second navigation controls.
-
-## Publish on GitHub Pages
-
-Copy the contents of this folder to a GitHub repository and enable GitHub Pages from the repository root. No build step is required. GitHub Pages supports byte-range requests for MP4 playback.
