@@ -1353,3 +1353,37 @@ pre.bibtex { margin: 0; padding: 1rem; overflow-x: auto; white-space: pre; borde
   .story-figure figcaption { padding:.8rem; }
   .project-video-feature .feature-video-heading { grid-template-columns:1fr; }
 }
+
+/* =========================================================
+   FEATURED PROJECT CARD COVER OVERRIDE
+   Keep the P-MC-PILCO, MANTA Planning, and MANTA Control
+   covers compact on the Home and Projects pages.
+   ========================================================= */
+.featured-project-grid > .research-feature-tile > .project-thumb-link {
+  display: block !important;
+  flex: 0 0 auto !important;
+  height: clamp(165px, 12vw, 190px) !important;
+  min-height: 0 !important;
+  max-height: 190px !important;
+  margin: -1.35rem -1.35rem 1.15rem !important;
+  overflow: hidden !important;
+  border-bottom: 1px solid rgba(148, 163, 184, .20) !important;
+}
+
+.featured-project-grid > .research-feature-tile > .project-thumb-link > .project-thumb {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  aspect-ratio: auto !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+@media (max-width: 700px) {
+  .featured-project-grid > .research-feature-tile > .project-thumb-link {
+    height: 190px !important;
+    max-height: 190px !important;
+  }
+}
