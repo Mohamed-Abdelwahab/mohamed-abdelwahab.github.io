@@ -15,7 +15,7 @@
       </script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body>
+<body class="portfolio-home">
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header aria-label="Primary navigation" class="site-header">
 <a aria-label="Mohamed Abdelwahab home" class="brand" href="index.html">
@@ -36,10 +36,10 @@
 <div class="hero-text">
 <div class="eyebrow">Robotics · Control · Robot Learning</div>
 <h1><span class="hero-title-gradient">Mohamed Abdelwahab</span></h1>
-<p class="hero-subtitle">I develop uncertainty-aware planning, control, and learning methods for robotic manipulators and marine robotic systems operating with uncertain dynamics, tight constraints, and limited real-world data.</p>
+<p class="hero-subtitle">I develop data-efficient robot learning, task-aware motion planning, and feedback control for manipulators and underwater robots. My work connects feasible plans with accurate execution under uncertain dynamics.</p>
 <div class="hero-buttons">
-<a class="btn-primary" href="demos/index.html">View research demos →</a>
-<a class="btn-secondary" href="projects/index.html">Explore projects</a>
+<a class="btn-primary" href="#selected-projects">Explore my research →</a>
+<a class="btn-secondary" href="demos/index.html">Watch the demos</a>
 <a class="btn-ghost" href="assets/pdfs/mohamed_abdelwahab_cv.pdf">Download CV</a>
 </div>
 </div>
@@ -74,36 +74,20 @@
 </div>
 </section>
 <section class="section-shell">
-<div class="section-heading"><div class="card-kicker">Selected work</div><h2>Research projects</h2><p>Each project page presents the problem, technical approach, evidence, and associated publication when available.</p></div>
-<div class="project-grid"><article class="project-tile"><a class="project-thumb-link" href="projects/pmc-pilco.html"><img alt="Gaussian Process rollout step for uncertainty-aware trajectory tracking" class="project-thumb" loading="lazy" src="assets/images/projects/pmc-pilco.jpg"/></a>
-<div class="card-kicker">Robot learning</div>
-<h3><a href="projects/pmc-pilco.html">P-MC-PILCO: Efficient Model-Based RL</a></h3>
-<p>Approximate Gaussian Processes and weight-space sampling reduce stochastic rollout cost while retaining uncertainty-aware policy optimization for robot control.</p>
-<div class="tag-list"><span>Gaussian Processes</span><span>Model-Based RL</span><span>Franka Panda</span></div>
-<a class="inline-link" href="projects/pmc-pilco.html">Read project →</a>
-</article>
-<article class="project-tile"><a class="project-thumb-link" href="projects/uvms-planning-control.html"><img alt="MANTA reduced-space A-star corridor extraction for underwater vehicle manipulator planning" class="project-thumb" loading="lazy" src="assets/images/projects/manta-planning.jpg"/></a>
-<div class="card-kicker">Motion planning</div>
-<h3><a href="projects/uvms-planning-control.html">MANTA: Manipulator-Aware UVMS Planning</a></h3>
-<p>A hierarchical planning and control architecture for underwater vehicle–manipulator systems operating in narrow, topologically complex environments.</p>
-<div class="tag-list"><span>UVMS</span><span>Topology-aware planning</span><span>Trajectory optimization</span></div>
-<a class="inline-link" href="projects/uvms-planning-control.html">Read project →</a>
-</article>
-<article class="project-tile"><a class="project-thumb-link" href="projects/adaptive-robust-control.html"><img alt="Adaptive robust controller showing Lyapunov monitoring, memory, robust action, and adaptive gain" class="project-thumb" loading="lazy" src="assets/images/projects/adaptive-robust-control.jpg"/></a>
+<div class="section-heading"><div class="card-kicker">Selected work</div><h2 id="selected-projects">From learning dynamics to planning and control</h2><p>P-MC-PILCO makes policy learning more efficient. MANTA Planning finds feasible vehicle–arm motion. MANTA Control learns how to track it. Explore the videos, illustrated methods, and experimental evidence.</p></div>
+<div class="project-grid featured-project-grid"><article class="project-tile research-feature-tile"><a class="project-thumb-link" href="projects/pmc-pilco.html"><img class="project-thumb" src="assets/images/projects/pmcpilco/coherent-rollout.jpg" alt="P-MC-PILCO explanation video frame" width="1600" height="900" loading="lazy"></a><div class="card-kicker">Robot learning</div><h3><a href="projects/pmc-pilco.html">P-MC-PILCO</a></h3><p>Make GP-based policy optimization more efficient by sampling one compact dynamics function per particle and reusing it throughout the rollout.</p><p class="project-evidence">Linear rollout evaluation in the inducing-set size · real Panda tracking</p><div class="tag-list"><span>Gaussian Processes</span><span>Model-based RL</span></div><a class="inline-link" href="projects/pmc-pilco.html">Explore the project →</a></article><article class="project-tile research-feature-tile"><a class="project-thumb-link" href="projects/manta-planning.html"><img class="project-thumb" src="assets/images/projects/manta-planning/robot-geometry.jpg" alt="MANTA Planning explanation video frame" width="1600" height="900" loading="lazy"></a><div class="card-kicker">Motion planning</div><h3><a href="projects/manta-planning.html">MANTA Planning</a></h3><p>Choose a passage, coordinate the vehicle and arm, and repair the final approach so the underwater robot arrives ready to manipulate.</p><p class="project-evidence">92.5% task success across 120 matched planning queries</p><div class="tag-list"><span>UVMS</span><span>Task-aware planning</span></div><a class="inline-link" href="projects/manta-planning.html">Explore the project →</a></article><article class="project-tile research-feature-tile"><a class="project-thumb-link" href="projects/manta-control.html"><img class="project-thumb" src="assets/images/projects/manta-control/water-disturbance.jpg" alt="MANTA Control explanation video frame" width="1600" height="900" loading="lazy"></a><div class="card-kicker">Learning-based control</div><h3><a href="projects/manta-control.html">MANTA Control</a></h3><p>Learn uncertain underwater dynamics from interaction, then optimize an eight-thruster policy to track planned references with few learning trials.</p><p class="project-evidence">Lower position RMSE than PD on 40/40 unseen references in simulation</p><div class="tag-list"><span>MC-PILCO</span><span>BlueROV tracking</span></div><a class="inline-link" href="projects/manta-control.html">Explore the project →</a></article></div><div class="project-grid supporting-project-grid"><article class="project-tile"><a class="project-thumb-link" href="projects/adaptive-robust-control.html"><img alt="Adaptive robust controller showing Lyapunov monitoring, memory, robust action, and adaptive gain" class="project-thumb" loading="lazy" src="assets/images/projects/adaptive-robust-control.jpg"/></a>
 <div class="card-kicker">Nonlinear control</div>
 <h3><a href="projects/adaptive-robust-control.html">Adaptive Robust Feedback Linearization</a></h3>
 <p>An adaptive robust correction compensates for unknown manipulator model mismatch without requiring a known analytical uncertainty bound.</p>
 <div class="tag-list"><span>Feedback linearization</span><span>Lyapunov analysis</span><span>Adaptive control</span></div>
 <a class="inline-link" href="projects/adaptive-robust-control.html">Read project →</a>
-</article>
-<article class="project-tile"><a class="project-thumb-link" href="projects/gp-robust-control.html"><img alt="Gaussian Process robust feedback linearization controller architecture" class="project-thumb" loading="lazy" src="assets/images/projects/gp-robust-control.jpg"/></a>
+</article><article class="project-tile"><a class="project-thumb-link" href="projects/gp-robust-control.html"><img alt="Gaussian Process robust feedback linearization controller architecture" class="project-thumb" loading="lazy" src="assets/images/projects/gp-robust-control.jpg"/></a>
 <div class="card-kicker">Learning-based control</div>
 <h3><a href="projects/gp-robust-control.html">GP-Based Robust Manipulator Control</a></h3>
 <p>Gaussian Process residual models and predictive uncertainty support robust trajectory tracking under unknown robot dynamics.</p>
 <div class="tag-list"><span>GPR</span><span>Robust control</span><span>Manipulation</span></div>
 <a class="inline-link" href="projects/gp-robust-control.html">Read project →</a>
-</article>
-</div>
+</article></div>
 </section>
 <section class="section-shell">
 <div class="section-heading"><div class="card-kicker">Experience</div><h2>Research and teaching</h2></div>
