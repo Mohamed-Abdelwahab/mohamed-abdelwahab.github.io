@@ -1,73 +1,129 @@
-<!doctype html>
+ <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Technical robotics articles by Mohamed Abdelwahab.">
-  <meta name="author" content="Mohamed Abdelwahab">
-  <meta name="theme-color" content="#07111f">
-  <title>Robotics Blog · Mohamed Abdelwahab</title>
-  <link href="../styles.css" rel="stylesheet">
-  <script defer src="../scripts.js"></script>
-  <script>
-    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
-  </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Research demo videos in robotics, control, planning, and robot learning." name="description"/>
+<meta content="Mohamed Abdelwahab" name="author"/>
+<meta content="#07111f" name="theme-color"/>
+<title>Demos · Mohamed Abdelwahab</title>
+<link href="../styles.css" rel="stylesheet"/>
+<script defer="" src="../scripts.js"></script>
+<script>
+        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+      </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
-  <header aria-label="Primary navigation" class="site-header">
-    <a aria-label="Mohamed Abdelwahab home" class="brand" href="../index.html">
-      <span class="brand-mark">MA</span>
-      <span class="brand-name">Mohamed Abdelwahab</span>
-    </a>
-    <button aria-controls="site-nav" aria-expanded="false" class="nav-toggle" type="button">Menu</button>
-    <nav class="nav-links" id="site-nav">
-      <a href="../index.html">Home</a>
-      <a href="../projects/index.html">Projects</a>
-      <a href="../demos/index.html">Demos</a>
-      <a href="../publications.html">Publications</a>
-      <a class="active" href="index.html">Robotics Blog</a>
-    </nav>
-  </header>
-  <main id="main-content">
-    <section class="page-hero">
-      <div class="card-kicker">Robotics blog</div>
-      <h1>Technical notes and explanations</h1>
-      <p>Long-form articles for explaining robotics, estimation, control, planning, and robot-learning concepts with equations, diagrams, code, and videos.</p>
-    </section>
-    <section class="section-shell">
-      <div class="blog-grid">
-        <article class="blog-card">
-          <div class="blog-status">Coming soon</div>
-          <h3><a href="gaussian-process-regression.html">Gaussian Process Regression</a></h3>
-          <p>A detailed article on Gaussian Process Regression will be added soon 😊</p>
-          <a class="inline-link" href="gaussian-process-regression.html">View page →</a>
-        </article>
-        <article class="blog-card ik-featured-blog-card">
-          <a class="blog-card-visual" href="inverse-kinematics.html" aria-label="Open the inverse kinematics article">
-            <img src="../assets/images/blog/inverse-kinematics/story-poster.jpg" alt="Alpha5 inverse-kinematics animation showing a local solver and residual plot" loading="lazy">
-          </a>
-          <div class="blog-status live">Featured article</div>
-          <h3><a href="inverse-kinematics.html">Inverse Kinematics: From a Target to Alpha5 Motion</a></h3>
-          <p>An intuitive guide to Jacobian transpose, damped least squares, QP, local minima, deterministic multi-start search, and motion planning—with Stonefish and real Alpha5 demonstrations.</p>
-          <div class="placeholder-outline ik-outline-live">
-            <span>Visual overview video</span>
-            <span>Jacobian, DLS, and QP derivations</span>
-            <span>Local minima and branch-aware multi-start</span>
-            <span>Joint-space planning and pick-and-place</span>
-          </div>
-          <a class="inline-link" href="inverse-kinematics.html">Read the article →</a>
-        </article>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header aria-label="Primary navigation" class="site-header">
+<a aria-label="Mohamed Abdelwahab home" class="brand" href="../index.html">
+<span class="brand-mark">MA</span>
+<span class="brand-name">Mohamed Abdelwahab</span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" class="nav-toggle" type="button">Menu</button>
+<nav class="nav-links" id="site-nav">
+<a href="../index.html">Home</a>
+<a href="../projects/index.html">Projects</a>
+<a class="active" href="../demos/index.html">Demos</a>
+<a href="../publications.html">Publications</a>
+<a href="../blog/index.html">Robotics Blog</a>
+</nav>
+</header>
+<main id="main-content">
+<section class="page-hero"><div class="card-kicker">Research demos</div><h1>Robotics in motion</h1><p>A curated set of robot-learning, manipulation, motion-planning, and robust-control demonstrations across simulation and robotic platforms.</p></section>
+<section class="section-shell"><div class="demo-grid">
+<article class="demo-card">
+<div class="video-shell">
+<video controls="" data-demo-video="" data-seekable-video="" playsinline="" poster="../assets/images/demo-first-frames/usv-regulation.jpg" preload="metadata" tabindex="0">
+<source src="../assets/videos/main_research_demo.mp4" type="video/mp4"/>
+          Your browser does not support HTML5 video.
+        </video>
+<div class="video-unavailable"><div><strong>Video unavailable</strong></div></div>
+</div>
+<div class="video-content"><h3>Regulation Control of a USV</h3><p>Closed-loop regulation and disturbance-rejection behavior for an unmanned surface vehicle.</p><div class="tag-list"><span>USV</span><span>Regulation</span><span>Marine control</span></div></div>
+</article>
+<article class="demo-card">
+<div class="video-shell youtube-shell"><button aria-label="Play P-MC-PILCO on Franka Panda video" class="youtube-facade" data-youtube-id="GVZH6ffUfTM" data-youtube-title="P-MC-PILCO on Franka Panda" type="button"><img alt="First frame of the Franka Panda P-MC-PILCO experiment" loading="eager" src="../assets/images/demo-first-frames/franka-panda.jpg"/><span aria-hidden="true" class="youtube-play-icon">▶</span></button></div>
+<div class="video-content"><h3>P-MC-PILCO on Franka Panda</h3><p>Efficient Gaussian-Process-based model-based reinforcement learning for trajectory tracking on a 7-DoF Franka Emika Panda.</p><div class="tag-list"><span>Franka Panda</span><span>P-MC-PILCO</span><span>Robot learning</span></div></div>
+</article>
+<article class="demo-card">
+<div class="video-shell">
+<video controls="" data-demo-video="" data-seekable-video="" playsinline="" poster="../assets/images/demo-first-frames/manta-planning.jpg" preload="metadata" tabindex="0">
+<source src="../assets/videos/uvms_planning_preview.mp4" type="video/mp4"/>
+          Your browser does not support HTML5 video.
+        </video>
+<div class="video-unavailable"><div><strong>Video unavailable</strong></div></div>
+</div>
+<div class="video-content"><h3>Planning with MANTA</h3><p>Topology-guided global planning and manipulation-aware trajectory refinement for underwater vehicle–manipulator systems in confined environments.</p><div class="tag-list"><span>MANTA</span><span>UVMS</span><span>Motion planning</span></div></div>
+</article>
+<article class="demo-card">
+<div class="video-shell">
+<video controls="" data-demo-video="" data-seekable-video="" playsinline="" poster="../assets/images/demo-first-frames/adaptive-results.jpg" preload="metadata" tabindex="0">
+<source src="../assets/videos/adaptive_control_preview.mp4" type="video/mp4"/>
+          Your browser does not support HTML5 video.
+        </video>
+<div class="video-unavailable"><div><strong>Video unavailable</strong></div></div>
+</div>
+<div class="video-content"><h3>Adaptive Robust Control: Tracking Results</h3><p>Comparative tracking results for adaptive robust feedback linearization under unknown manipulator uncertainty.</p><div class="tag-list"><span>Adaptive control</span><span>Robust tracking</span><span>Manipulator</span></div></div>
+</article>
+<article class="demo-card">
+  <div class="video-shell">
+    <video
+      controls
+      preload="metadata"
+      playsinline
+      data-seekable-video
+      poster="../assets/images/blog/inverse-kinematics/alpha5-pick-place-first-frame.jpg"
+      aria-label="Alpha5 pick-and-place with joint-space planning video"
+    >
+      <source
+        src="../assets/videos/blog/alpha5_pick_place.mp4"
+        type="video/mp4"
+      >
+      Your browser does not support the video element.
+    </video>
+
+    <div class="video-unavailable">
+      <div>
+        <strong>Video unavailable</strong>
+        The local MP4 could not be loaded.
       </div>
-    </section>
-  </main>
-  <footer class="footer">
-    <span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
-    <span class="footer-links">
-      <a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
-      <a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
-    </span>
-  </footer>
+    </div>
+  </div>
+
+  <div class="video-content">
+    <h3>Alpha5 Pick-and-Place with Joint-Space Planning</h3>
+    <p>
+      Branch-aware inverse kinematics and smooth joint-space trajectory
+      planning for a complete pick-and-place task on the Alpha5 manipulator.
+    </p>
+    <div class="tag-list">
+      <span>Alpha5</span>
+      <span>Pick and place</span>
+      <span>Joint-space planning</span>
+    </div>
+  </div>
+</article>
+<article class="demo-card">
+<div class="video-shell">
+<video controls="" data-demo-video="" data-seekable-video="" playsinline="" poster="../assets/images/demo-first-frames/gp-robust-control.jpg" preload="metadata" tabindex="0">
+<source src="../assets/videos/gp_robust_control_demo.mp4" type="video/mp4"/>
+          Your browser does not support HTML5 video.
+        </video>
+<div class="video-unavailable"><div><strong>Video unavailable</strong></div></div>
+</div>
+<div class="video-content"><h3>GP-Based Robust Manipulator Control</h3><p>Robust trajectory tracking using Gaussian Process residual models and uncertainty-aware compensation.</p><div class="tag-list"><span>Gaussian Processes</span><span>Robust control</span><span>Manipulation</span></div></div>
+</article>
+</div></section>
+</main>
+<footer class="footer">
+<span class="footer-copyright">© 2026 Mohamed Abdelwahab</span>
+<span class="footer-links">
+<a href="https://www.linkedin.com/in/mohamed-abdelwahab-2605bb191/">LinkedIn</a>
+<a href="mailto:mohamedabdelwahabb96@gmail.com">Email</a>
+</span>
+</footer>
 </body>
 </html>
